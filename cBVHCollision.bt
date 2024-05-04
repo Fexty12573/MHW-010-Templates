@@ -1,0 +1,66 @@
+// By Fexty
+
+#include "Mt.bt"
+
+typedef enum<uint32> {
+    NODE_TYPE_QUAD = 1,
+    NODE_TYPE_BINARY_OPTIMIZE = 2
+} BVHNodeType;
+
+typedef struct {
+    char Magic[4];
+    uint32 Version;
+    BVHNodeType Type;
+    FSkip(4);
+    AABB TotalAABB;
+    uint32 NodeCount;
+    uint32 LeafCount;
+    ubyte BasicAllocedMultiple<name="[Bool] BasicAllocedMultiple">;
+    ubyte UseBufferAllocatedMemory<name="[Bool] UseBufferAllocatedMemory">;
+    FSkip(6);
+} BVHHeader<read=Str("Ver: %d, Type: %s, NodeCount: %d, LeafCount: %d", 
+    this.Version, EnumToString(this.Type), this.NodeCount, this.LeafCount)>;
+
+typedef struct {
+    AABB ChildAABB[2];
+    ushort2 ChildIndex;
+    ubyte Status;
+    FSkip(11);
+} BVHNodeBinaryOptimize;
+
+typedef struct {
+    ubyte4 Status;
+    ushort4 ChildIndex;
+    FSkip(4);
+    AABB4 ChildAABB;
+} BVHNodeQuad<read=ReadBVHNodeQuad>;
+
+typedef struct {
+    BVHHeader Header;
+    if (Header.Type == NODE_TYPE_BINARY_OPTIMIZE) {
+        BVHNodeBinaryOptimize Nodes[Header.NodeCount]<optimize=false>;
+    } else if (Header.Type == NODE_TYPE_QUAD) {
+        BVHNodeQuad Nodes[Header.NodeCount]<optimize=false>;
+    }
+} cBVHCollision<read=ReadBVH>;
+
+string ReadBVHNodeQuad(BVHNodeQuad& n) {
+    string s = "";
+    SPrintf(s, "Status: [%d, %d, %d, %d], Children: [%d, %d, %d, %d]\n", 
+        n.Status[0], n.Status[1], n.Status[2], n.Status[3],
+        n.ChildIndex[0], n.ChildIndex[1], n.ChildIndex[2], n.ChildIndex[3]);
+    return s;
+}
+
+string ReadBVHHeader(BVHHeader& h) {
+    string s;
+    SPrintf(s, "Ver: %d, Type: %s, NodeCount: %d, LeafCount: %d", 
+    h.Version, EnumToString(h.Type), h.NodeCount, h.LeafCount);
+    return s;
+}
+
+string ReadBVH(cBVHCollision& bvh) {
+    string s;
+    SPrintf(s, "%s", ReadBVHHeader(bvh.Header));
+    return s;
+}

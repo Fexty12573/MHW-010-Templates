@@ -1,0 +1,60 @@
+// By Fexty
+
+#include "Mt.bt"
+
+typedef enum<ubyte> {
+    GRID_CELL_MODE_U32 = 0,
+    GRID_CELL_MODE_U16 = 1,
+    GRID_CELL_MODE_NONE = 2
+} GridCellMode;
+
+typedef struct {
+    Vector3 mRegistAABBMinPos;
+    uint32 mRegistParam;
+    Vector3 mRegistAABBMaxPos;
+} cGridCollisionRegistInfo;
+
+typedef struct(uint32 RegistInfoCount) {
+    cGridCollisionRegistInfo RegistInfos[RegistInfoCount];
+} cGridRegistInfos;
+
+typedef struct {
+    uint16 LeafCount;
+    uint16 pad<hidden=true>;
+    uint32 LeafIndex;
+} GridColStaticGridInfo;
+
+typedef struct(GridCellMode mode) {
+    uint32 CellRegistCount;
+    if (mode == GRID_CELL_MODE_U32) {
+        uint32 CellRegist[CellRegistCount];
+    } else if (mode == GRID_CELL_MODE_U16) {
+        uint16 CellRegist[CellRegistCount];
+    }
+} GridColCellRegisterArray;
+
+typedef struct {
+    AABB BoundingAABB;
+    uint16 GridSizeX;
+    uint16 GridSizeZ;
+    GridCellMode CellMode;
+    ubyte StaticMode<name="[bool] StaticMode">;
+
+    if (CellMode == GRID_CELL_MODE_NONE) {
+        Printf("Error: CellMode is GRID_CELL_MODE_NONE. Skipping...");
+        return;
+    } else {
+        if (StaticMode) {
+            GridColStaticGridInfo StaticGridInfo;
+            uint32 StaticGridRegistParamCount;
+
+            if (CellMode == GRID_CELL_MODE_U32) {
+                uint32 StaticGridRegistParams[StaticGridRegistParamCount];
+            } else if (CellMode == GRID_CELL_MODE_U16) {
+                uint16 StaticGridRegistParams[StaticGridRegistParamCount];
+            }
+        } else {
+            GridColCellRegisterArray CellRegisterArray(CellMode)[GridSizeX * GridSizeZ]<optimize=false>;
+        }
+    }
+} cGridCollision;

@@ -1,0 +1,120 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rCameraSetting
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.cms
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    char magic[4];
+    uint16 version;
+    uint16 unused;
+} Header;
+
+#define VIEW_PARAM_CONSTANT                 9
+#define CAMERA_INTERPOLATION_PARAM_CONSTANT 2
+#define CAMERA_OFFSET_CONSTANT              3
+#define CAMERA_ROTATION_CONSTANT            2
+
+typedef struct {
+    float x, y, z;
+} Vec3<read=Str("%f %f %f", this.x, this.y, this.z)>;
+
+typedef struct {
+    float x, y;
+} Vec2<read=Str("%f %f", this.x, this.y)>;
+
+typedef struct {
+    uint32 CameraIndex;
+    Vec3 Offset;
+    float Fov;
+    uint32 InterpolateIndex;
+    uint32 ReturnInterpolateIndex;
+    uint32 ReturnInterpolatePriority;
+    uint32 RequestPriority;
+} ViewParamElement;
+
+typedef struct {
+    int32 X;
+    if (X != (VIEW_PARAM_CONSTANT + 5)) {
+        Printf("Invalid constant for ViewParam: %d, should be %d\n", X, VIEW_PARAM_CONSTANT + 5);
+        return;
+    }
+
+    uint32 elemCount;
+    local uint i;
+    for (i = 0; i < elemCount; ++i) {
+        ViewParamElement elements;
+    }
+} ViewParam<read=Str("%d Elements", this.elemCount)>;
+
+typedef struct {
+    uint32 EaseType;
+    float Time<comment="In Seconds">;
+} InterpolationParamElement;
+
+typedef struct {
+    int32 X;
+    if (X != (CAMERA_INTERPOLATION_PARAM_CONSTANT + 5)) {
+        Printf("Invalid constant for InterpolationParam: %d, should be %d\n", X, CAMERA_INTERPOLATION_PARAM_CONSTANT + 5);
+        return;
+    }
+
+    uint32 elemCount;
+    local uint i;
+    for (i = 0; i < elemCount; ++i) {
+        InterpolationParamElement elements;
+    }
+} InterpolationParam<read=Str("%d Elements", this.elemCount)>;
+
+typedef struct {
+    Vec3 Offset;
+    float InterpolationTime<comment="In Seconds">;
+} CameraOffsetElement;
+
+typedef struct {
+    int32 X;
+    if (X != (CAMERA_OFFSET_CONSTANT + 5)) {
+        Printf("Invalid constant for CameraOffset: %d, should be %d\n", X, CAMERA_OFFSET_CONSTANT + 5);
+        return;
+    }
+
+    uint32 elemCount;
+    local uint i;
+    for (i = 0; i < elemCount; ++i) {
+        CameraOffsetElement elements;
+    }
+} CameraOffset<read=Str("%d Elements", this.elemCount)>;
+
+typedef struct {
+    Vec2 InitialSpeed<comment="FirstSpeed">;
+    Vec2 MaxSpeed<comment="MaxSpeed">;
+    Vec2 Acceleration<comment="UpSpeed">;
+    Vec2 DecaySpeed<comment="DownSpeed">;
+} CameraRotationElement;
+
+typedef struct {
+    int32 X;
+    if (X != (CAMERA_ROTATION_CONSTANT + 5)) {
+        Printf("Invalid constant for CameraOffset: %d, should be %d\n", X, CAMERA_ROTATION_CONSTANT + 5);
+        return;
+    }
+
+    uint32 elemCount;
+    local uint i;
+    for (i = 0; i < elemCount; ++i) {
+        CameraRotationElement elements;
+    }
+} CameraRotation<read=Str("%d Elements", this.elemCount)>;
+
+Header header;
+ViewParam viewParam;
+InterpolationParam interpolationParam;
+CameraOffset cameraOffset;
+CameraRotation cameraRotation;
