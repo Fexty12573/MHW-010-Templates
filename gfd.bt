@@ -1,0 +1,182 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rGUIFont
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *:gfd
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef enum<uint32> {
+    TEX_SUFFIX_NONE = 0,
+    TEX_SUFFIX_ID,
+    TEX_SUFFIX_HQ,
+    TEX_SUFFIX_ID_HQ,
+    TEX_SUFFIX_IDL,
+    TEX_SUFFIX_IDL_HQ,
+    TEX_SUFFIX_AM_NOMIP,
+    TEX_SUFFIX_COUNT
+} TEX_SUFFIX;
+
+typedef enum<uint32> {
+    FONT_TEXTURED,
+    FONT_IMAGE_BASED,
+    FONT_MARGE_TEXTURE,
+    FONT_TYPE_OUTLINED,
+    FONT_TYPE_MERGE,
+    FONT_TYPE_COUNT
+} FONT_TYPE;
+
+typedef struct {
+    char magic[4];
+    uint32 mVersion;
+    uint32 mAttr;
+    TEX_SUFFIX mSuffix;
+    FONT_TYPE mFontType;
+    uint32 mFontSize;
+    uint32 mTextureNum;
+    uint32 mCharNum;
+    uint32 unk0;
+    uint32 mDescentNum;
+    float mMaxAscent;
+    float mMaxDescent;
+    float unk1;
+} Header;
+
+typedef struct {
+    uint32 code;
+    uint32 textureIndex : 8;
+    uint32 u : 12;
+    uint32 v : 12;
+    uint32 w : 12;
+    uint32 h : 12;
+    uint32 offset : 8;
+    uint32 tw : 12;
+    uint32 th : 12;
+    uint32 descentIndex : 4;
+    uint32 isValid : 1;
+    uint32 requestLayout : 1;
+    uint32 invisible : 1;
+    uint32 : 1;
+    uint32 pad;
+} GUICHAR<read=readGUICHAR>;
+
+typedef struct {
+    uint32 textureIndex : 8;
+    uint32 u : 12;
+    uint32 v : 12;
+    uint32 index : 16;
+    uint32 : 16;
+    uint32 layoutNext : 16;
+    uint32 requestNext : 16;
+} GUISRC_CHAR;
+
+typedef struct {
+    uint32 mStrSize;
+    char mStr[mStrSize + 1];
+} FixedString<read=readFixedString>;
+
+string readGUICHAR(GUICHAR& g) {
+    return Str("Tex: %d, Code: %d, Pos: [%03d, %03d], S: %dx%d, T: %dx%d", g.textureIndex, g.code, g.u, g.v, g.w, g.h, g.tw, g.th);
+}
+
+string readFixedString(FixedString& s) {
+    return Str("%s", s.mStr);
+}
+
+void processOutlineFont(char buffer[], uint size) {
+    local char bufferCopy[size];
+    Memcpy(bufferCopy, buffer, size);
+
+    local uint i = 0, 
+               j = 0;
+    local uint64 n = 1;
+    
+    local uint len3f = size & 0x3f;
+    if (len3f > 0) {
+        do {
+            i += 1;
+            n = n * 2 + 1;
+        } while (i < len3f);
+    }
+    
+    local int lens = (int)len3f;
+    n = (n & 0xae6e39b58a355f45) << (0x40U - lens & 0x3f) | 0xae6e39b58a355f45U >> lens;
+    local byte res10[8];
+    for (i = 0; i < 8; i++) {
+        res10[i] = (byte)(n >> (i * 8));
+    }
+    
+    if (size > 0) {
+        i = 0;
+        local uint x;
+        do {
+            x = j & 0x80000007;
+            if ((int)x < 0) {
+                x = (x - 1 | 0xfffffff8) + 1;
+            }
+            
+            j += 1;
+            bufferCopy[i] = bufferCopy[i] ^ res10[x];
+            i += 1;
+        } while (j < size);
+    }
+
+    Printf("%s", bufferCopy);
+    return;
+    local uint k = 0;
+    for (k = 0; k < size; k++) {
+        if (k % 16 == 0) {
+            Printf("%02X\n", bufferCopy[k]);
+        } else {
+            Printf("%02X ", bufferCopy[k]);
+        }
+    }
+}
+
+typedef struct {
+    Header mHeader;
+    float mDescent[mHeader.mDescentNum]<optimize=false>;
+    uint32 mTexturePathSize;
+    if (mTexturePathSize > 0) {
+        char mTexturePath[mTexturePathSize + 1];
+    } else {
+        FSkip(1);
+    }
+    if (!(mHeader.mAttr & 0x8) && mHeader.mTextureNum > 0) {
+        FixedString mTexPaths[mHeader.mTextureNum]<optimize=false>;
+    }
+
+    GUICHAR mChar[mHeader.mCharNum];
+    GUICHAR mChar2[mHeader.unk0];
+
+    if (mHeader.mAttr & 1) {
+        uint32 mDynamicCharTW : 12;
+        uint32 mDynamicCharTH : 12;
+        uint32 mDynamicTextureNum : 4;
+        uint32 mDynamicTextureSize : 4;
+        uint32 mDynamicLineNum : 12;
+        uint32 mRequestStartIndex : 16;
+        uint32 : 4;
+        uint32 mDynamicTextureFormat;
+        uint32 mDynamicTextureMisc;
+        
+        GUISRC_CHAR mpSourceChar[mHeader.mCharNum];
+    } else {
+        if (mHeader.mFontType == FONT_TYPE_OUTLINED) {
+            uint32 f0;
+            uint32 f4;
+            uint32 size;
+            char mPath[size];
+            processOutlineFont(mPath, size);
+        } else if (mHeader.mFontType == FONT_TYPE_MERGE) {
+            FixedString mSubFonts[8]<optimize=false>;
+        }
+    }
+} rGUIFont;
+
+rGUIFont file;

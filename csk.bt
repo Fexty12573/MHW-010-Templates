@@ -1,0 +1,77 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rCameraShake
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.csk
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    float x, y, z;
+} Vec3<read=Str("%f %f %f", this.x, this.y, this.z)>;
+
+typedef struct {
+    uint32 ib;
+    char magic[4];
+    uint32 version;
+    uint32 count;
+} Header;
+
+typedef struct {
+    uint32 CD[3];
+    float FirstDirAngle;
+    byte FirstDirRandom; // bool
+    byte KeepBaseAngle; // bool
+    float NoiseAngle;
+    float StartInSpeed;
+    float StartOutSpeed;
+    float StartInPower;
+    float StartOutPower;
+    float StartDuration;
+    float LoopDuration;
+    float FinishOutSpeed;
+    float FinishDuration;
+} ShakePosParam;
+
+typedef struct {
+    Vec3 ShakeAxis;
+    float StartInSpeed;
+    float StartOutSpeed;
+    float StartInDegree;
+    float StartOutDegree;
+    float StartDuration;
+    float LoopDuration;
+    float FinishOutSpeed;
+    float FinishDuration;
+} ShakeRotParam;
+
+typedef struct {
+    byte DoVib;
+    uint16 unk1;
+    uint16 unk2;
+    float Time;
+    uint16 unk4;
+} PadVibParam<read=Str("DoVib: %d | Time: %.2f", this.DoVib, this.Time)>;
+
+typedef struct {
+    int32 Priority;
+    float ValidDist;
+    byte PosActive; // bool
+    byte RotActive; // bool
+    byte PadActive; // bool
+    ShakePosParam PosParam;
+    ShakeRotParam RotParam;
+    PadVibParam PadParam;
+} ShakeParam<read=Str("Active: %d %d %d | P: %d | Dist: %.0f", this.PosActive, this.RotActive, this.PadActive,
+    this.Priority, this.ValidDist)>;
+
+Header header;
+local uint i;
+for (i = 0; i < header.count; ++i) {
+    ShakeParam param;
+}

@@ -1,0 +1,57 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rEnemyRemInfo
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.emr
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef enum<int32> {
+    No = -1,
+    Yes = 1
+} RareType;
+
+typedef struct {
+    uint32 ib;
+    uint16 version;
+    uint32 count;
+} Header;
+
+typedef struct {
+    uint32 item;
+    int32 frequency;
+} ItemFrequency<read=Str("%d: %d*", this.item, this.frequency)>;
+
+typedef struct {
+    uint32 item;
+    RareType has_rare;
+} BreakReward<read=Str("%d%s", item, has_rare != -1 ? " + Rare" : "")>;
+
+typedef struct {
+    BreakReward break0<name="Head/Horn Break">;
+    BreakReward break1<name="Neck Break">;
+    BreakReward break2<name="Chest Break">;
+    BreakReward break3<name="Back Break">;
+    BreakReward break4<name="Foreleg Break">;
+    BreakReward break5<name="Leg Break">;
+    BreakReward break6<name="Wing Break">;
+    BreakReward break7<name="Tail Break/Carve">;
+    BreakReward break8<name="Special Break 1">;
+    BreakReward break9<name="Special Break 2">;
+    int32 unused[2];
+    BreakReward dropped_item;
+    uint32 rare_item;
+    ItemFrequency carves[6];
+    ItemFrequency rewards[10];
+} EnemyRemInfo;
+
+Header header;
+local int n;
+for (n = 0; n < header.count; ++n) {
+    EnemyRemInfo entry;
+}

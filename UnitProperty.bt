@@ -1,0 +1,106 @@
+
+// rUnitProperty::... structs
+// By Fexty
+
+
+typedef enum<uint32> {
+    FloatUnitProperty       = 0x04B747F9,
+    BoolUnitProperty        = 0x12491816,
+    ColorUnitProperty       = 0x23D2FFA3,
+    EventUnitProperty       = 0x7422512F,
+    Float64UnitProperty     = 0x427A4CE8,
+    GroupBeginUnitProperty  = 0x0EDA89CC,
+    GroupEndUnitProperty    = 0x37F2AB36,
+    Int64UnitProperty       = 0x20489808,
+    IntUnitProperty         = 0x189831BA,
+    MatrixUnitProperty      = 0x1456608C,
+    ObjectUnitProperty      = 0x13536B8B,
+    PageBeginUnitProperty   = 0x2D09EBD7,
+    PageEndUnitProperty     = 0x65EA28E0,
+    RefUnitProperty         = 0x196D2077,
+    ResourceUnitProperty    = 0x7576D978,
+    StringUnitProperty      = 0x7F9AD296,
+    VectorUnitProperty      = 0x4F9357BC
+} PropertyType;
+
+typedef struct {
+    float x, y, z, w;
+} vector4;
+
+typedef struct {
+    vector4 m[4];
+} matrix4x4;
+
+typedef struct {
+    uint32 mType;
+    uint16 mVersion;
+    uint16 mSubType;
+    uint32 mUnknown1;
+    uint32 mUnknown2;
+    uint32 mCount;
+    uint32 mSize;
+} ObjectRef;
+
+typedef struct {
+    string mPropName;
+    uint32 mPropType;
+    string mPropTypeName;
+    uint32 mPropAttr;
+    uint32 mPropIndex;
+    uint32 mPropCount;
+    byte mUser;
+} UnitProperty;
+
+typedef struct {
+    PropertyType mType;
+
+    switch (mType) {
+    case BoolUnitProperty:          byte mValue;        break;
+    case FloatUnitProperty:         float mValue;       break;
+    case Float64UnitProperty:       double mValue;      break;
+    case IntUnitProperty:           int32 mValue;       break;
+    case Int64UnitProperty:         int64 mValue;       break;
+    case ColorUnitProperty:         uint32 mValue;      break;
+    case EventUnitProperty:         int32 mValue;       break;
+    case VectorUnitProperty:        vector4 mValue;     break;
+    case MatrixUnitProperty:        matrix4x4 mValue;   break;
+    case StringUnitProperty:        string mValue;      break;
+    case ResourceUnitProperty:      string mPath;
+                                    string mDTI;        break;
+    default:                                            break;
+    }
+
+    if (mType == RefUnitProperty) {
+        Printf("RefUnitProperty is not supported as of now.\n");
+        ObjectRef mRef;
+        if (mRef.mType == 0x534658 && mRef.mVersion == 0x13 && mRef.mSubType == 0xB) {
+            ubyte mBuffer[mRef.mSize];
+        }
+    } else if (mType == ObjectUnitProperty) {
+        Printf("ObjectUnitProperty is not supported as of now.\n");
+        ObjectRef mRef;
+        if (mRef.mType == 0x534658 && mRef.mVersion == 0x13 && mRef.mSubType == 0xB) {
+            ubyte mBuffer[mRef.mSize];
+        }
+    }
+
+    if (mType != GroupBeginUnitProperty && mType != GroupEndUnitProperty &&
+        mType != PageBeginUnitProperty && mType != PageEndUnitProperty) {
+        UnitProperty mBaseProperty<read=GetBasePropAnnotation>;
+    }
+} Property;
+
+string GetBasePropAnnotation(UnitProperty& p) {
+    local string s;
+    return SPrintf(s, "%s (%s)", p.mPropName, p.mPropTypeName);
+}
+string GetPropertyAnnotation(Property& p) {
+    local string s;
+    if (!exists(p.mBaseProperty)) {
+        return "--------";
+    }
+
+    return SPrintf(s, "%s %s", p.mBaseProperty.mPropTypeName, p.mBaseProperty.mPropName);
+}
+
+

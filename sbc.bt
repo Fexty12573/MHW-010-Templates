@@ -1,0 +1,107 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: rCollision
+//   Authors: Fexty
+//   Version: 1.0
+//   Purpose: 
+//  Category: 
+// File Mask: *.sbc
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "cBVHCollision.bt"
+#include "cGridCollision.bt"
+
+typedef struct {
+    char Magic[4];
+    uint32 Version;
+    uint32 SpaceDivisionTypeParts;
+    uint32 SpaceDivisionTypeTriangles;
+    uint16 PartsInfoCount;
+    uint16 MaterialInfoCount;
+    uint32 TotalLeafCount;
+    uint32 TotalTriangleCount;
+    uint32 TotalVertexCount;
+    uint32 TotalModifyCount;
+    uint32 pad[3]<hidden=true>;
+    AABB TotalAABB;
+} SbcHeader<read=Str("Ver: %d, SpaceDivParts: %d, SpaceDivTris: %d, PartsInfos: %d, MaterialInfos: %d, Leaves: %d, Triangles: %d, Vertices: %d, Modifiers: %d", 
+    this.Version, this.SpaceDivisionTypeParts, this.SpaceDivisionTypeTriangles, this.PartsInfoCount, this.MaterialInfoCount, this.TotalLeafCount, this.TotalTriangleCount, this.TotalVertexCount, this.TotalModifyCount)>;
+
+typedef struct {
+    AABB BoundingVolume;
+    uint64 BVHPtr<name="[EXE Only] BVHPtr">;
+    uint64 GridPtr<name="[EXE Only] GridPtr">;
+    uint64 GridRegistPtr<name="[EXE Only] GridRegistPtr">;
+    uint32 LeafIndex;
+    uint16 LeafCount;
+    uint16 pad1<hidden=true>;
+    uint32 TriangleIndex;
+    uint16 TriangleCount;
+    uint16 pad2<hidden=true>;
+    uint32 VertexIndex;
+    uint16 VertexCount;
+    uint16 pad3<hidden=true>;
+    int32 Id;
+    FSkip(12);
+} SbcPartsInfo<read=Str("Id: %d, Leaves: [%d:%d], Triangles: [%d:%d], Vertices: [%d:%d]", 
+    this.Id, this.LeafIndex, this.LeafIndex + this.LeafCount, this.TriangleIndex, this.TriangleIndex + this.TriangleCount, this.VertexIndex, this.VertexIndex + this.VertexCount)>;
+
+typedef struct {
+    Vector3 Normal;
+    ushort3 VertexIndex;
+    uint16 MaterialIndex;
+    uint32 Attribute;
+    ubyte3 AdjustParam;
+    ubyte Reserved;
+    uint32 PhysicsReserved;
+} SbcTriangle<read=Str("Normal: { %.3f, %.3f, %.3f }, Vertices: [ %d, %d, %d ], Material: %d", 
+    this.Normal.X, this.Normal.Y, this.Normal.Z, this.VertexIndex[0], this.VertexIndex[1], this.VertexIndex[2], this.MaterialIndex)>;
+
+typedef struct {
+    Vector3 Position;
+    uint32 Attribute;
+} SbcVertex<read=Str("Position: { %f, %f, %f }", this.Position.X, this.Position.Y, this.Position.Z)>;
+
+typedef struct {
+    uint32 Attribute;
+    uint4 Attr;
+    uint32 Pad[3];
+} SbcMaterialInfo<read=Str("Attribute: %d", this.Attribute)>;
+
+typedef struct {
+    ushort2 TriangleIndex;
+    ubyte2 CommonUseVertexIndex;
+    ubyte2 NoCommonUseVertexIndex;
+    uint16 MaterialIndex;
+} SbcLeaf<read=Str("TriangleIndex: [ %d, %d ], CommonUseVertices: [ %d, %d ], NoCommonUseVertices: [ %d, %d ], Material: %d", 
+    this.TriangleIndex[0], this.TriangleIndex[1], this.CommonUseVertexIndex[0], this.CommonUseVertexIndex[1], this.NoCommonUseVertexIndex[0], this.NoCommonUseVertexIndex[1], this.MaterialIndex)>;
+
+
+SbcHeader Header;
+uint32 BroadPhaseWorkSize;
+SbcPartsInfo PartsInfos[Header.PartsInfoCount]<optimize=false>;
+
+if (Header.SpaceDivisionTypeTriangles < 2) {
+    cBVHCollision BVHs[Header.PartsInfoCount]<optimize=false>;
+    cBVHCollision MainBVH;
+} else if (Header.SpaceDivisionTypeTriangles == 2) {
+    local uint32 i;
+    for (i = 0; i < Header.PartsInfoCount; i++) {
+        cGridRegistInfos Regists(PartsInfos[i].LeafCount);
+    }
+
+    cGridRegistInfos MainRegist(Header.PartsInfoCount);
+}
+
+SbcTriangle Triangles[Header.TotalTriangleCount];
+SbcVertex Vertices[Header.TotalVertexCount];
+SbcMaterialInfo MaterialInfos[Header.MaterialInfoCount];
+SbcLeaf Leaves[Header.TotalLeafCount];
+
+if (Header.SpaceDivisionTypeTriangles == 2) {
+    cGridCollision Grids[Header.PartsInfoCount]<optimize=false>;
+    cGridCollision MainGrid;
+}

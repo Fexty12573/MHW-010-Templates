@@ -1,0 +1,52 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: rActionParam2
+//   Authors: Fexty
+//   Version: 1.0
+//   Purpose: 
+//  Category: 
+// File Mask: *.actp2
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "UnitProperty.bt"
+
+typedef struct {
+    uint32 magic;
+    uint32 a;
+    uint32 ver;
+    uint32 _;
+} Header;
+
+typedef struct {
+    uint32 mDTIHash<format=hex,read=Str("%s", get_dti_name(this))>;
+    
+    if (mDTIHash == 0x11E2D786) {
+        byte mUse;
+        uint32 mNameCrc<format=hex>;
+        if (mUse != 0) {
+            uint32 mPropertyCount;
+            Printf("Found %d properties\n", mPropertyCount);
+            UnitProperty mProperties[mPropertyCount]<optimize=false,read=GetPropertyAnnotation>;
+        } else {
+            Printf("Unused Property at 0x%X\n", FTell() - 9);
+        }
+    } else {
+        Printf("Non ActionData Parameters not supported as of now.\n");
+    }
+} ActionData<read=readActionData>;
+
+string readActionData(ActionData& a) {
+    if (a.mUse) {
+        return Str("DTI: %X | Name: %X | Properties: %d", a.mDTIHash, a.mNameCrc, a.mPropertyCount);
+    } else {
+        return Str("[UNUSED] DTI: %X | Name: %X | Properties: 0", a.mDTIHash, a.mNameCrc);
+    }
+}
+
+
+Header header;
+uint32 mActionDataCount;
+ActionData mActionData[mActionDataCount]<optimize=false>;

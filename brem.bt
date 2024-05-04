@@ -1,0 +1,27 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rBuiRem
+//   Authors: Fexty
+//   Version: 1
+//   Purpose: 
+//  Category: 
+// File Mask: *.brem
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+
+uint32 magic;
+uint16 ver;
+
+struct {
+    uint32 x;
+    uint32 monster;
+    ubyte c;
+    uint32 d;
+    uint32 items[8];
+    ubyte counts[8];
+    ubyte weights[8];
+} data;

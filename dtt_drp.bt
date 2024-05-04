@@ -1,0 +1,91 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: 
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.dtt_drp
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    uint32 signature;
+    uint32 version;
+    uint32 id<name="Monster ID",bgcolor=cRed>;
+    uint32 unk<comment="Is discarded">;
+} Header;
+
+typedef struct {
+    float mChance<comment="maybe?">;
+    uint32 unk1;
+    uint32 mMonsterId<comment="???">;
+    uint32 mActionId;
+} cDropPopByAction;
+
+typedef struct {
+    SetBackColor(cWhite);
+    uint32 mCount;
+    SetBackColor(cYellow);
+    cDropPopByAction mEntries[mCount]<optimize=false>;
+} cDropPopByActionList;
+
+typedef struct {
+    uint32 unk0;
+    float unk1;
+    uint32 unk2;
+} cDropPopSituational;
+
+typedef struct {
+    SetBackColor(cWhite);
+    uint32 mCount;
+    SetBackColor(cGreen);
+    cDropPopSituational mEntries[mCount]<optimize=false>;
+} cDropPopSituationalList;
+
+typedef struct {
+    uint32 unk0;
+    float unk1;
+    uint32 unk2;
+    uint32 unk3;
+} cDropPopPartsBreak;
+
+typedef struct {
+    SetBackColor(cWhite);
+    uint32 mCount;
+    SetBackColor(cPurple);
+    cDropPopPartsBreak mEntries[mCount]<optimize=false>;
+} cDropPopPartsBreakList;
+
+typedef struct {
+    int32 unk0;
+    uint32 mDropCount;
+    byte mIsDropNormal<comment="bool">;
+    byte mIsDropAngry<comment="bool">;
+    byte mIsDropTired<comment="bool">;
+} cDropPopClawGrab;
+
+typedef struct {
+    int32 unk0;
+    int32 unk1;
+    float unk2;
+    int32 unk3;
+} cDropPopPartsDamage;
+
+typedef struct {
+    uint32 mCount;
+    cDropPopPartsDamage mEntries[mCount]<optimize=false>;
+} cDropPopPartsDamageList;
+
+Header header;
+uint32 mActionIDs[11]<bgcolor=0xffffc344>;
+cDropPopByActionList mActionList1<name="Action List 1">;
+cDropPopSituationalList mSituationalList1<name="Situational List 1">;
+cDropPopPartsBreakList mPartsBreakList1<name="Partbreak List 1">;
+cDropPopClawGrab mClawGrabList[3]<name="Clawgrab Lists",bgcolor=cLtRed>;
+cDropPopByActionList mActionList2<name="Action List 2">;
+cDropPopSituationalList mSituationalList2<name="Situational List 2">;
+cDropPopPartsBreakList mPartsBreakList2<name="Partbreak List 2">;
+cDropPopPartsDamageList mPartsDamageLists[2]<name="Partdamage Lists",bgcolor=cLtGreen,optimize=false>;

@@ -1,0 +1,90 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.dtt_cvc
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct Header {
+    uint signature;
+    uint version;
+    uint monster;
+    uint unused;
+} Header;
+
+typedef struct cFindCondition {
+    int enumValue; // ConditionType
+    float unk0;
+    float unk1;
+} cFindCondition;
+
+typedef struct EmDistRate {
+    float unk0;
+    float unk1;
+} EmDistRate;
+
+typedef struct cEmDistanceRate {
+    uint count;
+    EmDistRate mDistRates[count]<optimize=false>;
+} cEmDistanceRate;
+
+typedef struct cEmCombatValueChange {
+    float unk0;
+    float unk1;
+    float unk2;
+    uint count;
+    cFindCondition mFindConditions[count]<optimize=false>;
+    cEmDistanceRate mDistanceRates1[2]<optimize=false>;
+    float unk3[6];
+    cEmDistanceRate mDistanceRates2[2]<optimize=false>;
+} cEmCombatValueChange;
+
+typedef struct cDyingRate {
+    float unk0;
+    uint unk1;
+    float unk2;
+} cDyingRate;
+
+typedef struct cDyingValue {
+    uint count1;
+    cDyingRate mDyingRates1[count1]<optimize=false>;
+    uint count2;
+    cDyingRate mDyingRates2[count2]<optimize=false>;
+    float unk0;
+    float unk1;
+    float unk2;
+    float unk3;
+    float unk4;
+} cDyingValue;
+
+typedef struct cCombatSign {
+    float unk0;
+    float unk1;
+} cCombatSign;
+
+typedef struct cCombatSignValue {
+    uint count;
+    cCombatSign mCombatSigns[count]<optimize=false>;
+} cCombatSignValue;
+
+typedef struct cLotRate {
+    float unk0;
+    uint unk1;
+} cLotRate;
+
+typedef struct rEmCombatValueChange {
+    uint count;
+    cEmCombatValueChange mCombatValueChanges[count]<optimize=false>;
+    cDyingValue mDyingValue;
+    cCombatSignValue mCombatSignValue;
+    cLotRate mLotRate;
+} rEmCombatValueChange;
+
+Header header;
+rEmCombatValueChange file;

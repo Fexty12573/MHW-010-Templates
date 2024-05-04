@@ -1,0 +1,357 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.1 Binary Template
+//
+//      File: SDL
+//   Authors: Fexty
+//   Version: 1.0
+//   Purpose: Monster Hunter World SDL
+//  Category: 
+// File Mask: *.sdl
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef enum<ubyte> {
+    TYPE_UNKNOWN_3 = 0x0,
+    TYPE_ROOT = 0x1,
+    TYPE_UNIT_0 = 0x2,
+    TYPE_SYSTEM_0 = 0x3,
+    TYPE_SCHEDULER = 0x4,
+    TYPE_OBJECT = 0x5,
+    TYPE_INT_0 = 0x6,
+    TYPE_INT64 = 0x7,
+    TYPE_VECTOR = 0x8,
+    TYPE_FLOAT_0 = 0x9,
+    TYPE_FLOAT64 = 0xA,
+    TYPE_BOOL_1 = 0xB,
+    TYPE_REF = 0xC,
+    TYPE_RESOURCE = 0xD,
+    TYPE_STRING_0 = 0xE,
+    TYPE_EVENT_3 = 0xF,
+    TYPE_MATRIX_0 = 0x10
+} TrackType;
+
+typedef enum<ubyte> {
+    MODE_CONSTANT = 0x0,
+    MODE_OFFSET = 0x1,
+    MODE_TRIGGER = 0x2,
+    MODE_LINEAR = 0x3,
+    MODE_OFFSET_F = 0x4,
+    MODE_HERMITE = 0x5
+} KeyMode;
+
+typedef enum<ubyte> {
+    DTI_TYPE_UNDEFINED = 0x0,
+    DTI_TYPE_CLASS = 0x1,
+    DTI_TYPE_CLASSREF = 0x2,
+    DTI_TYPE_BOOL = 0x3,
+    DTI_TYPE_U8 = 0x4,
+    DTI_TYPE_U16 = 0x5,
+    DTI_TYPE_U32 = 0x6,
+    DTI_TYPE_U64 = 0x7,
+    DTI_TYPE_S8 = 0x8,
+    DTI_TYPE_S16 = 0x9,
+    DTI_TYPE_S32 = 0xA,
+    DTI_TYPE_S64 = 0xB,
+    DTI_TYPE_F32 = 0xC,
+    DTI_TYPE_F64 = 0xD,
+    DTI_TYPE_STRING = 0xE,
+    DTI_TYPE_COLOR = 0xF,
+    DTI_TYPE_POINT = 0x10,
+    DTI_TYPE_SIZE = 0x11,
+    DTI_TYPE_RECT = 0x12,
+    DTI_TYPE_MATRIX = 0x13,
+    DTI_TYPE_VECTOR3 = 0x14,
+    DTI_TYPE_VECTOR4 = 0x15,
+    DTI_TYPE_QUATERNION = 0x16,
+    DTI_TYPE_PROPERTY = 0x17,
+    DTI_TYPE_EVENT = 0x18,
+    DTI_TYPE_GROUP = 0x19,
+    DTI_TYPE_PAGE_BEGIN = 0x1A,
+    DTI_TYPE_PAGE_END = 0x1B,
+    DTI_TYPE_EVENT32 = 0x1C,
+    DTI_TYPE_ARRAY = 0x1D,
+    DTI_TYPE_PROPERTYLIST = 0x1E,
+    DTI_TYPE_GROUP_END = 0x1F,
+    DTI_TYPE_CSTRING = 0x20,
+    DTI_TYPE_TIME = 0x21,
+    DTI_TYPE_FLOAT2 = 0x22,
+    DTI_TYPE_FLOAT3 = 0x23,
+    DTI_TYPE_FLOAT4 = 0x24,
+    DTI_TYPE_FLOAT3x3 = 0x25,
+    DTI_TYPE_FLOAT4x3 = 0x26,
+    DTI_TYPE_FLOAT4x4 = 0x27,
+    DTI_TYPE_EASECURVE = 0x28,
+    DTI_TYPE_LINE = 0x29,
+    DTI_TYPE_LINESEGMENT = 0x2A,
+    DTI_TYPE_RAY = 0x2B,
+    DTI_TYPE_PLANE = 0x2C,
+    DTI_TYPE_SPHERE = 0x2D,
+    DTI_TYPE_CAPSULE = 0x2E,
+    DTI_TYPE_AABB = 0x2F,
+    DTI_TYPE_OBB = 0x30,
+    DTI_TYPE_CYLINDER = 0x31,
+    DTI_TYPE_TRIANGLE = 0x32,
+    DTI_TYPE_CONE = 0x33,
+    DTI_TYPE_TORUS = 0x34,
+    DTI_TYPE_ELLIPSOID = 0x35,
+    DTI_TYPE_RANGE = 0x36,
+    DTI_TYPE_RANGEF = 0x37,
+    DTI_TYPE_RANGEU16 = 0x38,
+    DTI_TYPE_HERMITECURVE = 0x39,
+    DTI_TYPE_ENUMLIST = 0x3A,
+    DTI_TYPE_FLOAT3x4 = 0x3B,
+    DTI_TYPE_LINESEGMENT4 = 0x3C,
+    DTI_TYPE_AABB4 = 0x3D,
+    DTI_TYPE_OSCILLATOR = 0x3E,
+    DTI_TYPE_VARIABLE = 0x3F,
+    DTI_TYPE_VECTOR2 = 0x40,
+    DTI_TYPE_MATRIX33 = 0x41,
+    DTI_TYPE_RECT3D_XZ = 0x42,
+    DTI_TYPE_RECT3D = 0x43,
+    DTI_TYPE_RECT3D_COLLISION = 0x44,
+    DTI_TYPE_PLANE_XZ = 0x45,
+    DTI_TYPE_RAY_Y = 0x46,
+    DTI_TYPE_POINTF = 0x47,
+    DTI_TYPE_SIZEF = 0x48,
+    DTI_TYPE_RECTF = 0x49,
+    DTI_TYPE_EVENT64 = 0x4A,
+    DTI_TYPE_END = 0x4B,
+    DTI_TYPE_CUSTOM = 0x80
+} DtiType;
+
+typedef struct {
+    float x<bgcolor=0xFF0000>;
+    float y<bgcolor=0x00FF00>;
+    float z<bgcolor=0x0000FF>;
+    float w<bgcolor=0xFFFFFF>;
+} Vec4;
+
+typedef struct {
+    uint32 frame<bgcolor=0x990000>;
+    uint32 event_id<bgcolor=0x009900>;
+    uint32 param<bgcolor=0x000099>;
+} Event32;
+
+string ReadVec4(Vec4& v) {
+    string s;
+    SPrintf(s, "{ %f, %f, %f, %f }", v.x, v.y, v.z, v.w);
+    return s;
+}
+
+string ReadEvent32(Event32& e) {
+    string s;
+    SPrintf(s, "Id: %d, Frame: %d, Param: %d", e.event_id, e.frame, e.param);
+    return s;
+}
+void OffsetName(uint64 meta_data_offset, uint64 str_offset) {
+    local uint64 prev = FTell();
+    FSeek(meta_data_offset + str_offset);
+    string name<bgcolor=0x99FF99>;
+    FSeek(prev);
+}
+
+uint64 ReadKeyData(TrackType type, uint64 offset, uint64 meta_data_offset) {
+    local uint64 _pos = FTell();
+    local uint64 size = 0;
+    FSeek(offset);
+
+    switch (type) {
+       case TYPE_INT_0:
+            int32 value<bgcolor=0x447700>;
+            size = 4;
+            break;
+        case TYPE_INT64:
+            int64 value<bgcolor=0x44EE00>;
+            size = 8;
+        case TYPE_VECTOR:
+            Vec4 value<read=ReadVec4>;
+            size = 16;
+            break;
+        case TYPE_FLOAT_0:
+            float value<bgcolor=0x774400>;
+            size = 4;
+            break;
+        case TYPE_FLOAT64:
+            double value<bgcolor=0xEE4400>;
+            size = 8;
+            break;
+        case TYPE_BOOL_1:
+            ubyte value<bgcolor=0x0044EE>;
+            size = 1;
+            break;
+        case TYPE_REF:
+            uint32 value<bgcolor=0>;
+            size = 4;
+            break;
+        case TYPE_STRING_0:
+            uint64 meta_offset<hidden=true>;
+            if (meta_offset != 0) {
+                local uint64 _pos2 = FTell();
+                FSeek(meta_data_offset + meta_offset);
+                string value<bgcolor=0x22FF22>;
+                FSeek(_pos2);
+            }
+            size = 8;
+            break;
+        case TYPE_EVENT_3:
+            Event32 value<read=ReadEvent32>;
+            size = 12;
+            break;
+        case TYPE_MATRIX_0:
+            struct {
+                struct { float X, Y, Z, W; } m[4]<bgcolor=0x00EE44>;
+            } value;
+            size = 64;
+            break;
+    }
+
+    FSeek(_pos);
+    return size;
+}
+
+typedef struct {
+    uint32 frame : 24<bgcolor=0x00FFFF>;
+    uint32 mode : 8;
+    FSkip(-1);
+    KeyMode key_mode<bgcolor=0xFF00FF>;
+} rScheduler_Key;
+
+typedef struct {
+    uint32 dti<bgcolor=0x9999FF,format=hex>;
+    string path<bgcolor=0xFF9999>;
+} Resource<read=Str("%s | %08X", this.path, this.dti)>;
+
+string ReadKey(rScheduler_Key& k) {
+    string s;
+    SPrintf(s, "Frame: %d | Mode: %s", k.frame, EnumToString(k.key_mode));
+    return s;
+}
+
+string ReadResource(Resource& r) {
+    return r.path;
+}
+
+void DoUnion(TrackType t) {
+    if (t == TYPE_OBJECT) {
+        struct {
+            int parent_index : 24;
+            int line_idx : 8;
+        } u<read=Str("%d | %d", this.parent_index, this.unkn)>;
+    } else if (t == TYPE_UNIT_0) {
+        struct {
+            byte unkn[3];
+            byte line_idx;
+        } u<read=Str("%d", this.line_idx)>;
+    }
+}
+
+local uint i;
+local uint64 prev;
+local uint64 prev2;
+local int indent = 0;
+local string indentstr = "│   ";
+local uint k;
+local int n = 0;
+
+typedef struct(uint64 meta_data_offset) {
+    TrackType track_type<bgcolor=0xFFEC08>;
+    DtiType prop_type<bgcolor=0x1EDCAF>;
+    uint16 key_num<bgcolor=0x2233FF>;
+    struct {
+        int parent_index : 24;
+        int line_idx : 8;
+    } u<bgcolor=0x444444,read=Str("Parent: %d | Line: %d", this.parent_index, this.line_idx)>;
+    uint64 name_offset;
+    OffsetName(meta_data_offset, name_offset);
+    
+    if (key_num > 1) { Printf("Multi-key found at %d\n", n); }
+    
+    if (track_type == TYPE_SCHEDULER) {
+        Printf("Scheduler found at %d\n", n);
+    } else if (track_type == TYPE_EVENT_3) {
+        Printf("Event found at %d\n", n);
+    } else if (track_type == TYPE_REF) {
+        Printf("Ref found at %d\n", n);
+    }
+    n += 1;
+//    if (track_type == TYPE_ROOT || track_type == TYPE_SCHEDULER) {
+//        Printf("%s\n", name);
+//        indent += 1;
+//    } else {
+//        if (track_type == TYPE_UNIT_0) indent -= 1;
+//        for (k = 0; k < indent; k++) Printf(indentstr);
+//        Printf("└── %s\n", name);
+//        if (track_type == TYPE_UNIT_0) indent += 1;
+//    }
+
+    if (track_type == 2 || track_type == 3) {
+        uint32 dti_id<bgcolor=0x2222EE,format=hex>;
+    } else {
+        uint32 prop_index<bgcolor=0x47D847>;
+    }
+    
+    FSkip(4);
+    uint64 unit_group<bgcolor=0xAFCCE4>;
+
+    if (track_type >= 6 && track_type <= 16) {
+        uint64 key_offset<bgcolor=0x999999>;
+        uint64 key_value_offset<bgcolor=0xECECEC>;
+
+        prev = FTell(); 
+        FSeek(key_offset);
+        rScheduler_Key keys[key_num]<optimize=false,read=ReadKey>;
+        FSeek(prev);
+    } else {
+        FSkip(16);
+    }
+
+    if (key_num > 0) {
+        if (track_type == 13) {
+            prev = FTell(); 
+            FSeek(key_value_offset);
+            
+            for (i = 0; i < key_num; i++) {
+                uint64 meta_offset<hidden=false>;
+                if (meta_offset != 0) {
+                    prev2 = FTell();
+                    FSeek(meta_data_offset + meta_offset);
+                    Resource resource<read=ReadResource>;
+                    FSeek(prev2);
+                } else {
+                    Printf("NULL Resource Binding at %d\n", n - 1);
+                }
+            }
+
+            FSeek(prev);
+        } else if (track_type >= 6) {
+            local uint64 rel_offset = 0;
+            for (i = 0; i < key_num; i++) {
+                rel_offset += ReadKeyData(track_type, key_value_offset + rel_offset, meta_data_offset);
+            }
+        }
+    }
+} rScheduler_Track;
+
+typedef struct {
+    char filetype[4];
+    uint16 version;
+    uint16 track_num;
+    uint32 crc<format=hex>;
+    uint32 frame_num : 22;
+    uint32 floor_frame : 1;
+    uint32 reserved : 9;
+    uint32 base_track;
+    FSkip(4);
+    uint64 meta_data_offset;
+    uint64 track_offset;
+} rScheduler_Header;
+
+string ReadTrack(rScheduler_Track& t) {
+    string s;
+    SPrintf(s, "%s | %s | KeyNum: %d", t.name, EnumToString(t.track_type), t.key_num);
+    return s;
+}
+
+rScheduler_Header header;
+rScheduler_Track tracks(header.meta_data_offset)[header.track_num]<optimize=false,read=ReadTrack>;

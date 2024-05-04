@@ -1,0 +1,46 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rEmAITransition
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.dtt_aitr
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    uint32 iceborne;
+    uint32 version;
+    uint32 monsterId;
+    uint32 unused;
+} Header;
+
+typedef struct {
+    int32 unk1;
+    ubyte unkBool;
+} cEscapeConditionData;
+
+typedef struct {
+    uint32 mFlags;
+    cEscapeConditionData mConditionData[9];
+    float unk1;
+    float unk2;
+    uint32 unk3;
+} cEscapeData;
+
+typedef struct {
+    uint32 bitfield3;
+    uint32 bitfield9;
+} cAttackToEnemyData;
+
+typedef struct {
+    uint32 bitfields[4];
+} cTransitionCaution;
+
+Header header;
+cEscapeData mEscapeData;
+cAttackToEnemyData mAttackToEmData;
+cTransitionCaution mTransitionCaution;

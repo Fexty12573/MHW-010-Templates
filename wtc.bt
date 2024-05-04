@@ -1,0 +1,41 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rWpTutoComboData
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.wtc
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Header {
+    uint ib;
+    uint16 version;
+};
+
+struct ComboParts {
+    int AttackNameId;
+    int FrontTextId;
+    int ButtonId;
+    int ButtonRelation;
+    int ButtonId;
+    int ButtonRelation;
+    int ButtonId;
+    int BackTextId;
+};
+
+struct Combo {
+    uint unkn1;
+    ComboParts parts[4]<read=Str("Atk: %d, Front: %d, Btn: {%d %d %d}, Rel: {%d %d}, Back: %d", this.AttackNameId, this.FrontTextId, 
+        this.ButtonId[0], this.ButtonId[1], this.ButtonId[2], this.ButtonRelation[0], this.ButtonRelation[1], this.BackTextId)>;
+    byte unkn2;
+    int unkn3;
+};
+
+Header header;
+uint count;
+Combo combos[count];
+
