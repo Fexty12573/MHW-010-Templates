@@ -1,0 +1,88 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: rAnimalBasicParam
+//   Authors: Fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.abpr
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    char magic[4];
+    uint version;
+} Header;
+
+typedef struct {
+    float X<bgcolor=0x5555ff>;
+    float Y<bgcolor=0x55ff55>;
+    float Z<bgcolor=0xff5555>;
+} Vector3<read=Str("%f %f %f", this.X, this.Y, this.Z)>;
+
+typedef struct {
+    uint unk0;
+    uint Range;
+    uint Type;
+    uint Reaction;
+    uint Follow<comment="0 or 1">;
+} LobbyGestureData;
+
+typedef struct {
+    float ViewRangePl;
+    float ViewRangePlY;
+    float ViewRangeEm;
+    float ViewRangeEmY;
+    float ViewAnglePl;
+    float ViewAngleEm;
+    float CautionRangePl;
+    float CautionRangePlY;
+    float CautionRangeEm;
+    float CautionRangeEmY;
+    float EscapeRangePl;
+    float EscapeRangePlY;
+    float EscapeRangeEm;
+    float EscapeRangeEmY;
+    float AppendRangePl;
+    float AppendRangePlY;
+    float AppendRangeEm;
+    float AppendRangeEmY;
+    Vector3 ScrCollisionOffset;
+    Vector3 MyHouseRaiseHandOffset;
+    Vector3 MyHouseDownHandOffset;
+    Vector3 MyHouseFoodOffset;
+    float ScrCollisionRadius;
+    float GatherRadius;
+    uint CollisionParamType;
+    uint CollisionParamFilter;
+    uint DamageEffectType;
+    float RepopSecond;
+    Vector3 angleSet1;
+    Vector3 angleSet2;
+    float DamageEffectScale;
+    float Scale;
+    float RadiusSnowShoveler;
+    float UVScaleSnowShoveler;
+    float NoiseScaleSnowShoveler;
+    Vector3 Offset_SnowShoveler;
+    ubyte IgnoreYPosRangeShowShoveler;
+    ubyte EnableLookAt;
+    ubyte CanCautureWithNet;
+    ubyte HasHitCollision;
+    ubyte IsRareAnimal;
+    ubyte IsMROnly;
+    ubyte IsDropSlinger;
+    float DropSlingerProbability;
+    uint DropSlingerType;
+    uint DropSlingerNum;
+    ubyte IsChangeTheColorAccordingToTheSize;
+    Vector3 MinSizeColor;
+    Vector3 MaxSizeColor;
+    uint LobbyGestureDataCount;
+    LobbyGestureData GestureData[LobbyGestureDataCount];
+} cAnimalBasicParam;
+
+Header header;
+cAnimalBasicParam param;
