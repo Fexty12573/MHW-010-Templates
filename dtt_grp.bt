@@ -1,0 +1,41 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: rEmGroup
+//   Authors: fexty
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.dtt_grp
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    uint32 unk0;
+    ubyte unkBool0;
+    uint32 unk1;
+    ubyte unkBool1;
+} cGroupAnnounce;
+
+typedef struct {
+    float unk0;
+    float unk1;
+    float unk2;
+    float unk3;
+    float unk4;
+    ubyte unkBool0;
+    float unk6;
+    ubyte unkBool1;
+    float unk7;
+    float unk8;
+    ubyte unkBool2;
+    cGroupAnnounce announce[4];
+} cGroupData;
+
+uint32 ib;
+uint32 ver;
+uint32 monster;
+uint32 unused;
+cGroupData data;
+uint32 unk;
