@@ -1,0 +1,44 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: Fexty
+//   Version: 1
+//   Purpose: 
+//  Category: 
+// File Mask: *.pan_tuto
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+typedef struct {
+    uint32 ib;
+    int16 version;
+    uint32 entryCount;
+} Header;
+
+typedef struct {
+    // title: gmdKeyDiv2 * 2
+    // text: gmdKeyDiv2 * 2 + 1
+    uint32 gmdKeyDiv2; // gmd key / 2
+    int32 id;
+    ubyte unk1;
+    int32 type; // 0 = normal, 1 = simple (no texture)
+    int32 textureId; // ui\localize\tutorial\loc_tutorial%02d_ID
+    int32 movieId;
+    ubyte isLocalizedTex; // if it has a _XXX language suffix
+    uint32 unk4;
+} cPanelTutorial<read=Str("Id: %d, Title: %d, Body: %d, Tex: %d, Localized: %d, Type: %d, Movie: %d", 
+    this.id,
+    this.gmdKeyDiv2 * 2, 
+    this.gmdKeyDiv2 * 2 + 1, 
+    this.textureId, 
+    this.isLocalizedTex,
+    this.type,
+    this.movieId)>;
+
+
+Header header;
+cPanelTutorial tutorialPanels[header.entryCount];
+

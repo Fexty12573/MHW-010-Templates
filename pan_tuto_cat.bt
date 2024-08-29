@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: Fexty
+//   Version: 1
+//   Purpose: 
+//  Category: 
+// File Mask: *.pan_tuto_cat
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    uint32 ib;
+    uint16 version;
+    uint32 entryCount;
+} Header;
+
+typedef struct {
+    uint32 index;
+    int32 tutorialId;
+    uint32 unk2;
+    uint32 versionCheck;
+} cTutorialCategory<read=Str("Idx: %u Tutorial: %d, %u, Ver: %u", this.index, this.tutorialId, this.unk2, this.versionCheck)>;
+
+
+Header header;
+cTutorialCategory tutorials[header.entryCount];
