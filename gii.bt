@@ -1,0 +1,50 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: 
+//   Authors: Fexty
+//   Version: 
+//   Purpose: terrible file format. can't recommend.
+//  Category: 
+// File Mask: *.gii
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+struct {
+    char identifier[4];
+    uint version;
+    uint entryCount;
+} header;
+
+local int next;
+
+typedef struct(int offset) {
+    uint ID<bgcolor=0xff3433>;
+    local int before = FTell();
+    FSeek(offset);
+    string Name<bgcolor=0x87ff12>;
+    next = FTell();
+    FSeek(before);
+} Entry;
+
+string readEntry(Entry& e) {
+    string s;
+    SPrintf(s, "%d: %s", e.ID, e.Name);
+    return s;
+}
+
+next = FTell() + header.entryCount * 4 + 4;
+local int first_string = next;
+
+local int i = 0;
+for (i = 0; i < header.entryCount; i++) {
+    Entry entry(next)<read=readEntry>;
+}
+
+uint StringBlockSize;
+    
+
+
+
